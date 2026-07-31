@@ -1,0 +1,23 @@
+name: Poll Reddit for Leads
+
+on:
+  schedule:
+    - cron: "0 */2 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Reddit poll
+        run: |
+          response=$(curl -s -w "\n%{http_code}" -X POST "${{ vars.APP_URL }}/api/cron/poll-reddit" \
+            -H "X-Cron-Secret: ${{ secrets.CRON_SECRET }}" \
+            -H "X-Triggered-By: github-actions")
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | sed '$d')
+          echo "$body"
+          if [ "$http_code" -ge 400 ]; then
+            echo "Poll request failed with HTTP $http_code"
+            exit 1
+          fi

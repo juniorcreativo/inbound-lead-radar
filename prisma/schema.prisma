@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum LeadStatus {
+  NEW
+  DRAFT_READY
+  REPLIED
+  IGNORED
+  CONVERTED
+}
+
+model Lead {
+  id               String     @id @default(cuid())
+  platform         String // "reddit" today; "web" | "linkedin" later - plain string so new platforms need no migration
+  sourceType       String // "post" | "comment"
+  externalId       String // reddit fullname, e.g. "t3_abc123" (post) or "t1_xyz789" (comment)
+  subreddit        String?
+  url              String
+  author           String
+  title            String?
+  snippet          String
+  fullText         String     @db.Text
+  postedAt         DateTime
+  foundAt          DateTime   @default(now())
+  matchedPhrase    String?
+  confidenceScore  Float?
+  confidenceLabel  String? // "reject" | "low" | "medium" | "high"
+  status           LeadStatus @default(NEW)
+  contactInfo      Json? // { emails: string[], discord: string[], dmsOpen: boolean, otherNotes: string }
+  needSummary      String?    @db.Text
+  nicheTag         String? // "healthcare" | "coaching_consulting" | "real_estate" | "other" | "unclear"
+  draftReply       String?    @db.Text
+  draftGeneratedAt DateTime?
+  repliedAt        DateTime?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  @@unique([platform, externalId])
+  @@index([status])
+  @@index([platform, subreddit])
+  @@index([postedAt])
+}
+
+model SubredditConfig {
+  id                String   @id @default(cuid())
+  name              String   @unique // no "r/" prefix
+  enabled           Boolean  @default(true)
+  pollPosts         Boolean  @default(true)
+  pollComments      Boolean  @default(true)
+  lastSeenPostId    String?
+  lastSeenCommentId String?
+  notes             String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model IntentPhrase {
+  id        String   @id @default(cuid())
+  phrase    String   @unique
+  type      String   @default("INCLUDE") // "INCLUDE" | "EXCLUDE"
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model PollRun {
+  id                           String    @id @default(cuid())
+  startedAt                    DateTime  @default(now())
+  finishedAt                   DateTime?
+  status                       String    @default("RUNNING") // RUNNING | SUCCESS | FAILED | PARTIAL
+  triggeredBy                  String? // "github-actions" | "manual"
+  subredditsPolled             Int       @default(0)
+  postsFetched                 Int       @default(0)
+  commentsFetched              Int       @default(0)
+  candidatesAfterKeywordFilter Int       @default(0)
+  leadsCreated                 Int       @default(0)
+  geminiCallsMade              Int       @default(0)
+  errorsJson                   Json?
+}
