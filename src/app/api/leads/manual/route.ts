@@ -33,7 +33,8 @@ export async function POST(request: Request) {
   }
 
   const parsed = parseLeadUrl(url);
-  const subreddit = body.subreddit?.trim().replace(/^r\//, "") || parsed.subreddit;
+  const rawSubreddit = body.subreddit?.trim().replace(/^r\//, "") || parsed.subreddit;
+  const subreddit = rawSubreddit?.toLowerCase() ?? null;
   const platform = "reddit";
 
   const existing = await prisma.lead.findUnique({

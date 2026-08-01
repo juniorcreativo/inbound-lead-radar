@@ -11,17 +11,25 @@ const SUBREDDITS = [
   "marketing",
   "Entrepreneur",
   "smallbusiness",
+  "ecommerce",
+  "shopify",
+  "dropship",
+  "EtsySellers",
 ];
 
 const INCLUDE_PHRASES = [
-  "looking for a video editor",
-  "need someone to edit",
-  "content strategist needed",
-  "need help with short-form content",
-  "need a video editor",
-  "hire an editor",
-  "looking to hire",
-  "need help editing my videos",
+  "looking for a ugc creator",
+  "need a ugc creator",
+  "need ugc content",
+  "need ugc videos",
+  "looking for ugc ads",
+  "need ai ugc",
+  "ai avatar ads",
+  "ai avatar content",
+  "need video ads for my store",
+  "need video ads for my shopify",
+  "looking for someone to make ugc",
+  "hire a ugc creator",
 ];
 
 const EXCLUDE_PHRASES = [
@@ -29,6 +37,8 @@ const EXCLUDE_PHRASES = [
   "tutorial",
   "check out my portfolio",
   "diy editing tips",
+  "ugc creator available",
+  "check out my ugc",
 ];
 
 async function main() {

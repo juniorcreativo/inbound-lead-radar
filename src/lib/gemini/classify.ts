@@ -12,7 +12,16 @@ const ClassifyResultSchema = z.object({
   confidenceScore: z.number().min(0).max(1),
   confidenceLabel: z.enum(["reject", "low", "medium", "high"]),
   needSummary: z.string(),
-  nicheTag: z.enum(["healthcare", "coaching_consulting", "real_estate", "other", "unclear"]),
+  nicheTag: z.enum([
+    "beauty_skincare",
+    "health_supplements",
+    "fashion_apparel",
+    "home_lifestyle",
+    "tech_gadgets",
+    "food_beverage",
+    "other",
+    "unclear",
+  ]),
   contactInfo: z.object({
     emails: z.array(z.string()),
     discord: z.array(z.string()),

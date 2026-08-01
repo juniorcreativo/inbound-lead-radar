@@ -10,7 +10,16 @@ export const CLASSIFY_RESPONSE_SCHEMA = {
     needSummary: { type: "string" },
     nicheTag: {
       type: "string",
-      enum: ["healthcare", "coaching_consulting", "real_estate", "other", "unclear"],
+      enum: [
+        "beauty_skincare",
+        "health_supplements",
+        "fashion_apparel",
+        "home_lifestyle",
+        "tech_gadgets",
+        "food_beverage",
+        "other",
+        "unclear",
+      ],
     },
     contactInfo: {
       type: "object",
@@ -34,13 +43,13 @@ export const CLASSIFY_RESPONSE_SCHEMA = {
 };
 
 export function buildClassifySystemInstruction(): string {
-  return `You are an intent classifier for a lead-generation tool used by MotionCut Productions, a short-form video editing and content-strategy agency serving healthcare, coaching/consulting, and real estate clients. You will be shown a single Reddit post or comment. Determine whether the AUTHOR is asking to HIRE someone (a video editor, content strategist, or short-form content help) for their OWN business/content - i.e. genuine inbound demand for services like the ones MotionCut offers.
+  return `You are an intent classifier for a lead-generation tool used by MotionCut Productions, an agency that creates AI-powered UGC (user-generated-content-style) video ads and short-form content for e-commerce/DTC brand owners. You will be shown a single Reddit post or comment. Determine whether the AUTHOR is an e-commerce store or brand owner asking to HIRE someone for UGC content, UGC-style video ads, AI UGC/AI avatar content, or short-form ad creative for their products - i.e. genuine inbound demand for services like the ones MotionCut offers.
 
-Reject (isHireIntent=false) if: the author is advertising/promoting their OWN freelance or agency services rather than seeking to hire; the text is a general discussion, question, tutorial, or opinion about editing software/techniques with no expressed intent to hire; the hire request is for an unrelated role (e.g. an in-house full-time videographer job posting from a large company, or a role with no connection to video editing/content strategy/short-form content); or the text is too vague to tell.
+Reject (isHireIntent=false) if: the author is a UGC creator, video editor, or agency advertising/promoting their OWN services rather than seeking to hire; the text is a general discussion, question, tutorial, or opinion about ecommerce, marketing, or editing software with no expressed intent to hire; the hire request is for video/content work unrelated to e-commerce products (e.g. a documentary, streamer, author, or in-house corporate videographer role with no product/store to advertise); or the text is too vague to tell.
 
-Accept (isHireIntent=true) if the author is a business owner or individual expressing genuine need to hire or get help with video editing, short-form content (Reels/TikTok/Shorts), or content strategy for their own brand or business.
+Accept (isHireIntent=true) if the author owns or runs an e-commerce store, DTC brand, or physical/digital product business and expresses genuine need to hire or get help with UGC content, UGC-style video ads, AI UGC/AI avatar content, or short-form ad creative (Reels/TikTok/Shorts ads) to market their products.
 
-Be conservative with confidence - reserve 0.8+ for unambiguous hire intent. Output only the JSON object matching the provided schema, nothing else.`;
+Be conservative with confidence - reserve 0.8+ for unambiguous hire intent from a real product/store owner. Output only the JSON object matching the provided schema, nothing else.`;
 }
 
 export function buildClassifyUserContent(item: NormalizedRedditItem): string {
@@ -55,9 +64,9 @@ export function buildClassifyUserContent(item: NormalizedRedditItem): string {
 }
 
 export function buildDraftSystemInstruction(): string {
-  return `You are drafting a genuine, helpful reply on behalf of Ibrahim, who runs MotionCut Productions - a short-form video editing and content-strategy agency focused on healthcare, coaching/consulting, and real estate niches. You are replying to a Reddit post or comment where someone expressed they need help with video editing, short-form content, or content strategy.
+  return `You are drafting a genuine, helpful reply on behalf of Ibrahim, who runs MotionCut Productions - an agency specializing in AI-powered UGC video ads and short-form content for e-commerce/DTC brands, with a track record of high-performing UGC campaigns for a number of brands. You are replying to a Reddit post or comment where an e-commerce/product business owner expressed they need help with UGC content, UGC-style ads, AI UGC/avatar content, or short-form ad creative.
 
-Write a reply that: directly references specific details from their post so it clearly isn't a copy-paste template; is genuinely helpful FIRST - a tip, a direct answer to something they mentioned, or a clarifying question - before anything resembling an offer; does NOT read as a sales pitch, does NOT say "check out my services," and does NOT drop a link or portfolio unprompted; only if it fits naturally, mentions in a low-pressure way that Ibrahim does this kind of work and is happy to help further ("happy to share more if useful," "feel free to DM me"); matches a casual, human, Reddit-appropriate tone, not corporate; is 2-5 sentences of plain text with no markdown headers; and if the post signals a specific niche (healthcare, coaching/consulting, real estate), lets that inform the language without being overtly salesy about niche expertise.
+Write a reply that: directly references specific details from their post (their product, store, or stated goal) so it clearly isn't a copy-paste template; is genuinely helpful FIRST - a tip about what makes UGC ads convert, a direct answer to something they mentioned, or a clarifying question - before anything resembling an offer; does NOT read as a sales pitch, does NOT say "check out my services," and does NOT drop a link or portfolio unprompted; only if it fits naturally, mentions in a low-pressure way that Ibrahim's agency does AI UGC content for ecommerce brands and has had strong results, and is happy to help further ("happy to share examples if useful," "feel free to DM me"); matches a casual, human, Reddit-appropriate tone, not corporate; and is 2-5 sentences of plain text with no markdown headers.
 
 Output only the reply text, nothing else.`;
 }
@@ -77,6 +86,6 @@ export function buildDraftUserContent(item: {
   if (item.title) lines.push(`Title: ${item.title}`);
   lines.push(`Full text:\n${item.fullText}`);
   if (item.needSummary) lines.push(`What they need (summary): ${item.needSummary}`);
-  if (item.nicheTag) lines.push(`Detected niche: ${item.nicheTag}`);
+  if (item.nicheTag) lines.push(`Detected product category: ${item.nicheTag}`);
   return lines.join("\n");
 }
