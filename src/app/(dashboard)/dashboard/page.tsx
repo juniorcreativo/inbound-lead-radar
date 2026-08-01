@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { LeadStatus, Prisma } from "@/generated/prisma/client";
 import { FilterBar } from "@/components/leads/FilterBar";
 import { LeadList } from "@/components/leads/LeadList";
+import { AddLeadDialog } from "@/components/leads/AddLeadDialog";
 import type { SerializedLead } from "@/types";
 
 const VALID_STATUSES = new Set(Object.values(LeadStatus));
@@ -38,11 +39,14 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Leads</h1>
-        <p className="text-muted-foreground">
-          {leads.length} lead{leads.length === 1 ? "" : "s"} matching current filters
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold">Leads</h1>
+          <p className="text-muted-foreground">
+            {leads.length} lead{leads.length === 1 ? "" : "s"} matching current filters
+          </p>
+        </div>
+        <AddLeadDialog />
       </div>
       <FilterBar subreddits={subredditConfigs.map((s) => s.name)} />
       <LeadList leads={serializedLeads} />
