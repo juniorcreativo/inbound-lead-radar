@@ -11,6 +11,7 @@ import { StatusBadge } from "./StatusBadge";
 import { ConfidenceBadge } from "./ConfidenceBadge";
 import { DraftEditor } from "./DraftEditor";
 import { LeadStatus } from "@/generated/prisma/enums";
+import { daysSince, isStale } from "@/lib/format";
 import type { ContactInfo, SerializedLead } from "@/types";
 
 export function LeadDetail({ lead }: { lead: SerializedLead }) {
@@ -87,7 +88,11 @@ export function LeadDetail({ lead }: { lead: SerializedLead }) {
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Posted</span>
-              <span>{format(new Date(lead.postedAt), "MMM d, yyyy p")}</span>
+              <span className={isStale(lead.postedAt) ? "font-medium text-amber-500" : undefined}>
+                {isStale(lead.postedAt) && "⚠ "}
+                {format(new Date(lead.postedAt), "MMM d, yyyy p")}
+                {isStale(lead.postedAt) && ` (${Math.floor(daysSince(lead.postedAt))}d old)`}
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Found</span>

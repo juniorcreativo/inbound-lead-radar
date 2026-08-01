@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "./StatusBadge";
 import { ConfidenceBadge } from "./ConfidenceBadge";
 import { LeadStatus } from "@/generated/prisma/enums";
+import { isStale } from "@/lib/format";
 import type { SerializedLead } from "@/types";
 
 export function LeadCard({ lead }: { lead: SerializedLead }) {
@@ -42,7 +43,12 @@ export function LeadCard({ lead }: { lead: SerializedLead }) {
             <StatusBadge status={lead.status} />
             <ConfidenceBadge label={lead.confidenceLabel} />
           </div>
-          <span className="text-xs text-muted-foreground whitespace-nowrap">
+          <span
+            className={`text-xs whitespace-nowrap ${
+              isStale(lead.postedAt) ? "font-medium text-amber-500" : "text-muted-foreground"
+            }`}
+          >
+            {isStale(lead.postedAt) && "⚠ "}
             {formatDistanceToNow(new Date(lead.postedAt), { addSuffix: true })}
           </span>
         </CardHeader>
