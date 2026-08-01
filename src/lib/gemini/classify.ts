@@ -24,7 +24,7 @@ const ClassifyResultSchema = z.object({
 export type ClassifyResult = z.infer<typeof ClassifyResultSchema>;
 
 export async function classifyItem(item: NormalizedRedditItem): Promise<ClassifyResult> {
-  const model = process.env.GEMINI_MODEL_CLASSIFY || "gemini-2.5-flash";
+  const model = process.env.GEMINI_MODEL_CLASSIFY || "gemini-flash-latest";
   const raw = await generateContent({
     model,
     systemInstruction: buildClassifySystemInstruction(),

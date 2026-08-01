@@ -9,7 +9,7 @@ export async function generateDraftReply(lead: {
   needSummary: string | null;
   nicheTag: string | null;
 }): Promise<string> {
-  const model = process.env.GEMINI_MODEL_DRAFT || "gemini-2.5-flash";
+  const model = process.env.GEMINI_MODEL_DRAFT || "gemini-flash-latest";
   const raw = await generateContent({
     model,
     systemInstruction: buildDraftSystemInstruction(),
