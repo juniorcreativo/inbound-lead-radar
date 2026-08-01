@@ -1,8 +1,10 @@
 name: Poll Reddit for Leads
 
 on:
-  schedule:
-    - cron: "0 */2 * * *"
+  # Schedule disabled until the app is deployed (Vercel) and APP_URL/CRON_SECRET
+  # are configured as a repo variable/secret - re-enable once that's done.
+  # schedule:
+  #   - cron: "0 */2 * * *"
   workflow_dispatch: {}
 
 jobs:
